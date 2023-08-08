@@ -390,6 +390,16 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/ltdc.c</locationURI>
 		</link>
 		<link>
+			<name>Application/User/Core/lvgl_port_display.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/lvgl_port_display.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/Core/lvgl_port_touch.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/lvgl_port_touch.c</locationURI>
+		</link>
+		<link>
 			<name>Application/User/Core/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/main.c</locationURI>
