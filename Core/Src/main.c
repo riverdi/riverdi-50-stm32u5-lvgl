@@ -44,7 +44,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "lvgl/lvgl.h"
+#include "lvgl/demos/lv_demos.h"
+#include "lvgl_port_touch.h"
+#include "lvgl_port_display.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -151,6 +154,19 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
+
+  /* reset display */
+  HAL_GPIO_WritePin(LCD_DISP_RESET_GPIO_Port, LCD_DISP_RESET_Pin, GPIO_PIN_SET);
+
+  /* initialize LVGL framework */
+  lv_init();
+
+  /* initialize display and touchscreen */
+  lvgl_display_init();
+  lvgl_touchscreen_init();
+
+  /* lvgl demo */
+  lv_demo_widgets();
 
   /* USER CODE END 2 */
 

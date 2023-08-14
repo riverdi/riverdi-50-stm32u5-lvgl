@@ -410,6 +410,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/mdf.c</locationURI>
 		</link>
 		<link>
+			<name>Application/User/Core/mx25lm51245g.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/mx25lm51245g.c</locationURI>
+		</link>
+		<link>
 			<name>Application/User/Core/octospi.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/octospi.c</locationURI>

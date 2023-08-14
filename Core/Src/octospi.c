@@ -21,7 +21,12 @@
 #include "octospi.h"
 
 /* USER CODE BEGIN 0 */
+#include "mx25lm51245g.h"
 
+static uint8_t ospi_memory_reset        (OSPI_HandleTypeDef *hospi);
+static int32_t OSPI_NOR_EnterSOPIMode   (OSPI_HandleTypeDef *hospi);
+int32_t OSPI_DLYB_Enable                (OSPI_HandleTypeDef *hospi);
+int32_t OSPI_NOR_EnableMemoryMappedMode (OSPI_HandleTypeDef *hospi);
 /* USER CODE END 0 */
 
 OSPI_HandleTypeDef hospi1;
@@ -31,14 +36,14 @@ void MX_OCTOSPI1_Init(void)
 {
 
   /* USER CODE BEGIN OCTOSPI1_Init 0 */
-
+  MX25LM51245G_Info_t pInfo;
   /* USER CODE END OCTOSPI1_Init 0 */
 
   OSPIM_CfgTypeDef sOspiManagerCfg = {0};
   HAL_OSPI_DLYB_CfgTypeDef HAL_OSPI_DLYB_Cfg_Struct = {0};
 
   /* USER CODE BEGIN OCTOSPI1_Init 1 */
-
+  (void)MX25LM51245G_GetFlashInfo(&pInfo);
   /* USER CODE END OCTOSPI1_Init 1 */
   hospi1.Instance = OCTOSPI1;
   hospi1.Init.FifoThreshold = 4;
@@ -77,6 +82,19 @@ void MX_OCTOSPI1_Init(void)
   }
   /* USER CODE BEGIN OCTOSPI1_Init 2 */
 
+  /* OSPI memory reset */
+  if (ospi_memory_reset(&hospi1) != 0)
+    Error_Handler();
+
+  if (MX25LM51245G_AutoPollingMemReady(&hospi1,MX25LM51245G_SPI_MODE, MX25LM51245G_STR_TRANSFER) != MX25LM51245G_OK)
+    Error_Handler();
+
+  /* Enable octal mode */
+  if (OSPI_NOR_EnterSOPIMode(&hospi1) != 0)
+    Error_Handler();
+
+  if (OSPI_NOR_EnableMemoryMappedMode(&hospi1) != 0)
+   Error_Handler();
   /* USER CODE END OCTOSPI1_Init 2 */
 
 }
@@ -202,4 +220,143 @@ void HAL_OSPI_MspDeInit(OSPI_HandleTypeDef* ospiHandle)
 
 /* USER CODE BEGIN 1 */
 
+int32_t OSPI_DLYB_Enable(OSPI_HandleTypeDef *hospi)
+{
+  LL_DLYB_CfgTypeDef dlyb_cfg, dlyb_cfg_test;
+  int32_t ret = 0;
+  uint32_t div_value = 4;
+
+  /* delay block configuration */
+  if (HAL_OSPI_DLYB_GetClockPeriod(hospi, &dlyb_cfg) != HAL_OK)
+  {
+    ret = 1;
+  }
+
+  /* PhaseSel is divided by 4 (emperic value) */
+  dlyb_cfg.PhaseSel /= div_value;
+
+  /* save the present configuration for check */
+  dlyb_cfg_test = dlyb_cfg;
+
+  /* set delay block configuration */
+  if (HAL_OSPI_DLYB_SetConfig(hospi, &dlyb_cfg) != HAL_OK)
+  {
+    ret = 1;
+  }
+
+  /* check the set value */
+  if (HAL_OSPI_DLYB_GetConfig(hospi, &dlyb_cfg) != HAL_OK)
+  {
+    ret = 1;
+  }
+
+  if ((dlyb_cfg.PhaseSel != dlyb_cfg_test.PhaseSel) || \
+      (dlyb_cfg.Units != dlyb_cfg_test.Units))
+  {
+    ret = 1;
+  }
+
+  /* return BSP status */
+  return ret;
+}
+
+/**
+  * @brief  Reset the OSPI memory.
+  * @param  hospi: OSPI handle pointer
+  * @retval O on success 1 on Failure.
+  */
+static uint8_t ospi_memory_reset(OSPI_HandleTypeDef *hospi)
+{
+  int32_t ret = 0;
+
+  /* enable write operations */
+  if(MX25LM51245G_ResetEnable(hospi, MX25LM51245G_SPI_MODE, MX25LM51245G_STR_TRANSFER) != MX25LM51245G_OK)
+    ret = 1;
+  else if(MX25LM51245G_ResetMemory(hospi, MX25LM51245G_SPI_MODE, MX25LM51245G_STR_TRANSFER) != MX25LM51245G_OK)
+    ret = 1;
+  else if(MX25LM51245G_ResetEnable(hospi, MX25LM51245G_OPI_MODE, MX25LM51245G_STR_TRANSFER) != MX25LM51245G_OK)
+    ret = 1;
+  else if(MX25LM51245G_ResetMemory(hospi, MX25LM51245G_OPI_MODE, MX25LM51245G_STR_TRANSFER) != MX25LM51245G_OK)
+    ret = 1;
+  else if(MX25LM51245G_ResetEnable(hospi, MX25LM51245G_OPI_MODE, MX25LM51245G_DTR_TRANSFER) != MX25LM51245G_OK)
+    ret = 1;
+  else if(MX25LM51245G_ResetMemory(hospi, MX25LM51245G_OPI_MODE, MX25LM51245G_DTR_TRANSFER) != MX25LM51245G_OK)
+    ret = 1;
+  else
+    HAL_Delay(MX25LM51245G_RESET_MAX_TIME);
+
+  /* return BSP status */
+  return ret;
+}
+
+static int32_t OSPI_NOR_EnterSOPIMode(OSPI_HandleTypeDef *hospi)
+{
+  int32_t ret = 0;
+  uint8_t reg[2];
+
+  /* Enable write operations */
+  if (MX25LM51245G_WriteEnable(hospi, MX25LM51245G_SPI_MODE, MX25LM51245G_STR_TRANSFER) != MX25LM51245G_OK)
+  {
+    ret = 1;
+  }
+  /* Write Configuration register 2 (with new dummy cycles) */
+  else if (MX25LM51245G_WriteCfg2Register(hospi, MX25LM51245G_SPI_MODE, MX25LM51245G_STR_TRANSFER, MX25LM51245G_CR2_REG3_ADDR, MX25LM51245G_CR2_DC_6_CYCLES) != MX25LM51245G_OK)
+  {
+    ret = 1;
+  }
+  /* Enable write operations */
+  else if (MX25LM51245G_WriteEnable(hospi, MX25LM51245G_SPI_MODE, MX25LM51245G_STR_TRANSFER) != MX25LM51245G_OK)
+  {
+    ret = 1;
+  }
+  /* Write Configuration register 2 (with Octal I/O SPI protocol) */
+  else if (MX25LM51245G_WriteCfg2Register(hospi, MX25LM51245G_SPI_MODE, MX25LM51245G_STR_TRANSFER, MX25LM51245G_CR2_REG1_ADDR, MX25LM51245G_CR2_SOPI) != MX25LM51245G_OK)
+  {
+    ret = 1;
+  }
+  else
+  {
+    /* Wait that the configuration is effective and check that memory is ready */
+    HAL_Delay(MX25LM51245G_WRITE_REG_MAX_TIME);
+
+    /* Check Flash busy ? */
+     if (MX25LM51245G_AutoPollingMemReady(hospi, MX25LM51245G_OPI_MODE, MX25LM51245G_STR_TRANSFER) != MX25LM51245G_OK)
+    {
+      ret = 1;
+    }
+    /* Check the configuration has been correctly done */
+    else if (MX25LM51245G_ReadCfg2Register(hospi, MX25LM51245G_OPI_MODE, MX25LM51245G_STR_TRANSFER, MX25LM51245G_CR2_REG1_ADDR, reg) != MX25LM51245G_OK)
+    {
+      ret = 1;
+    }
+    else
+    {
+      if (reg[0] != MX25LM51245G_CR2_SOPI)
+      {
+        ret = 1;
+      }
+    }
+  }
+
+  /* Return BSP status */
+  return ret;
+}
+
+/**
+  * @brief  Configure the OSPI in memory-mapped mode
+  * @param  Instance  OSPI instance
+  * @retval BSP status
+  */
+int32_t OSPI_NOR_EnableMemoryMappedMode(OSPI_HandleTypeDef *hospi)
+{
+  int32_t ret = 0;
+
+  if(MX25LM51245G_EnableMemoryMappedModeSTR(hospi, MX25LM51245G_OPI_MODE, MX25LM51245G_4BYTES_SIZE) != MX25LM51245G_OK)
+    {
+      ret = 1;
+    }
+
+  /* Return BSP status */
+  return ret;
+}
 /* USER CODE END 1 */
