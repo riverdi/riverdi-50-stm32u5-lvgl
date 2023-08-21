@@ -39,11 +39,11 @@
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/riverdi-50-stm32u5-lvgl.ioc</locationURI>
 		</link>
-		<link>
-			<name>Middlewares/LVGL</name>
-			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/Third_Party/LVGL</locationURI>
-		</link>
+                <link>
+                        <name>Middlewares/LVGL</name>
+                        <type>2</type>
+                        <locationURI>PARENT-1-PROJECT_LOC/Middlewares/Third_Party/LVGL</locationURI>
+                </link>
 		<link>
 			<name>Drivers/CMSIS/system_stm32u5xx.c</name>
 			<type>1</type>
@@ -408,6 +408,11 @@
 			<name>Application/User/Core/mdf.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/mdf.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/Core/memorymap.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/memorymap.c</locationURI>
 		</link>
 		<link>
 			<name>Application/User/Core/mx25lm51245g.c</name>

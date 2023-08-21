@@ -33,6 +33,7 @@
 #include "icache.h"
 #include "lptim.h"
 #include "ltdc.h"
+#include "memorymap.h"
 #include "octospi.h"
 #include "rng.h"
 #include "rtc.h"
@@ -153,6 +154,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
   MX_USART6_UART_Init();
+  MX_MEMORYMAP_Init();
   /* USER CODE BEGIN 2 */
 
   /* reset display */

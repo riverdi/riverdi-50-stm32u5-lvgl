@@ -17,7 +17,6 @@ extern "C" {
 
 #define MY_DISP_HOR_RES    800
 #define MY_DISP_VER_RES    480
-#define LV_VER_RES_MAX	   68
 
 /**********************
  * GLOBAL PROTOTYPES

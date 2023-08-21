@@ -21,8 +21,8 @@ static void disp_flush_complete (DMA2D_HandleTypeDef*);
 static lv_disp_drv_t disp_drv;
 static lv_disp_draw_buf_t disp_buf;
 
-static __attribute__((aligned(32))) lv_color_t buf_1[MY_DISP_HOR_RES * 64];
-static __attribute__((aligned(32))) lv_color_t buf_2[MY_DISP_HOR_RES * 64];
+static __attribute__((aligned(32))) lv_color_t buf_1[MY_DISP_HOR_RES * 256];
+static __attribute__((aligned(32))) lv_color_t buf_2[MY_DISP_HOR_RES * 256];
 
 /**********************
  *   GLOBAL FUNCTIONS
@@ -38,7 +38,7 @@ lvgl_display_init (void)
   lv_disp_draw_buf_init (&disp_buf,
                          (void*) buf_1,
 						 (void*) buf_2,
-                         MY_DISP_HOR_RES * 64);
+                         MY_DISP_HOR_RES * 256);
 
   /* register the display in LVGL */
   lv_disp_drv_init(&disp_drv);
