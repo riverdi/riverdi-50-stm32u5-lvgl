@@ -39,11 +39,11 @@
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/riverdi-50-stm32u5-lvgl.ioc</locationURI>
 		</link>
-                <link>
-                        <name>Middlewares/LVGL</name>
-                        <type>2</type>
-                        <locationURI>PARENT-1-PROJECT_LOC/Middlewares/Third_Party/LVGL</locationURI>
-                </link>
+		<link>
+			<name>Middlewares/LVGL</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/Third_Party/LVGL</locationURI>
+		</link>
 		<link>
 			<name>Drivers/CMSIS/system_stm32u5xx.c</name>
 			<type>1</type>
@@ -355,6 +355,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/fdcan.c</locationURI>
 		</link>
 		<link>
+			<name>Application/User/Core/flash.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/flash.c</locationURI>
+		</link>
+		<link>
 			<name>Application/User/Core/gpio.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/gpio.c</locationURI>
@@ -363,6 +368,11 @@
 			<name>Application/User/Core/gpu2d.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/gpu2d.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/Core/gtzc.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/gtzc.c</locationURI>
 		</link>
 		<link>
 			<name>Application/User/Core/hash.c</name>

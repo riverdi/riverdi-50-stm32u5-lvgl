@@ -90,7 +90,7 @@ lvgl_touchscreen_read (lv_indev_drv_t  *indev,
 }
 
 void
-HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+HAL_GPIO_EXTI_Falling_Callback(uint16_t GPIO_Pin)
 {
   if (GPIO_Pin == CTP_INT_Pin)
     touch_irq = 1;

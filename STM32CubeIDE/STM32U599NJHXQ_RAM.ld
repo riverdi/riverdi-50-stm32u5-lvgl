@@ -43,8 +43,9 @@ _Min_Stack_Size = 0xe000; /* required amount of stack */
 /* Memories definition */
 MEMORY
 {
-  RAM  (xrw)  : ORIGIN = 0x20000000, LENGTH = 2496K
-  SRAM4 (xrw) : ORIGIN = 0x28000000, LENGTH = 16K
+  FLASH	(rx)	: ORIGIN = 0x08000000, LENGTH = 4096K
+  RAM2	(xrw)	: ORIGIN = 0x20000000, LENGTH = 750K
+  RAM	(xrw)	: ORIGIN = 0x200bb800, LENGTH = 1746K
 }
 
 /* Sections */
@@ -162,4 +163,13 @@ SECTIONS
   }
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
+
+ /*  Unitialized RAM2 section into "RAM2" RAM2 type memory */
+ .RAM2_Section :
+  {
+    . = ALIGN(4);
+    KEEP (*(.RAM2_Section))
+    . = ALIGN(4);
+  } >RAM2
+
 }

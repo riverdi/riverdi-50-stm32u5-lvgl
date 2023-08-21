@@ -27,7 +27,9 @@
 #include "dcache.h"
 #include "dma2d.h"
 #include "fdcan.h"
+#include "flash.h"
 #include "gpu2d.h"
+#include "gtzc.h"
 #include "hash.h"
 #include "i2c.h"
 #include "icache.h"
@@ -113,6 +115,8 @@ int main(void)
 
   /* Configure the System Power */
   SystemPower_Config();
+  /* GTZC initialisation */
+  MX_GTZC_Init();
 
   /* USER CODE BEGIN SysInit */
 
@@ -155,6 +159,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USART6_UART_Init();
   MX_MEMORYMAP_Init();
+  MX_FLASH_Init();
   /* USER CODE BEGIN 2 */
 
   /* reset display */
