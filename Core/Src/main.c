@@ -174,7 +174,9 @@ int main(void)
 
   /* lvgl demo */
   lv_demo_widgets();
-
+  /* pwm */
+  if (HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1) != HAL_OK)
+      Error_Handler();
   /* USER CODE END 2 */
 
   /* Init scheduler */
